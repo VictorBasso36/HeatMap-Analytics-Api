@@ -4,8 +4,14 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 router.get<{}, any>('/heatmaps', async (req, res) => {
-  return res.json('testing')
+  try {
+    const allDataPoints = await prisma.heatMap.findMany();
+    return res.json(allDataPoints);
+  } catch (error) {
+    return res.status(500).json({ error: 'Something went wrong' });
+  }
 });
+
 
 router.post<{}, any>('/heatmaps', async (req, res) => {
   const dataPoints = req.body;
