@@ -1,0 +1,19 @@
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+  
+model HeatMap {
+  id     Int     @id @default(autoincrement())
+  x      Float   // number for x-axis
+  y      Float   // number for y-axis
+  value  Float   // density of the point
+  domain String  // for domain or page
+  ip     String  // to differentiate users
+}
+
