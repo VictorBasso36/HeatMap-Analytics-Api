@@ -8,21 +8,27 @@ router.get<{}, any>('/heatmaps', async (req, res) => {
 });
 
 router.post<{}, any>('/heatmaps', async (req, res) => {
-  const { x, y, value, domain, ip } = req.body;
-  try {
-    const dataPoint = await prisma.heatMap.create({
-      data: {
-        x,
-        y,
-        value,
-        domain,
-        ip
-      }
-    });
-    return res.json(dataPoint);
-  } catch (error) {
-    return res.status(500).json({ error: 'Something went wrong' });
+  const dataPoints = req.body;
+  const results = [];
+  for (const dataPoint of dataPoints) {
+    const { x, y, value, domain, ip } = dataPoint;
+    try {
+      const result = await prisma.heatMap.create({
+        data: {
+          x,
+          y,
+          value,
+          domain,
+          ip
+        }
+      });
+      results.push(result);
+    } catch (error) {
+      console.error(`Failed to insert data point: ${JSON.stringify(dataPoint)}. Error: error`);
+    }
   }
+  return res.json(results);
 });
+
 
 export default router;
